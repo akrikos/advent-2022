@@ -70,5 +70,3 @@ def traverse(file: File):
             traverse(sub_file)
 traverse(root_file)
 print(sum)
-
-

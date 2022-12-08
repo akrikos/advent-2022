@@ -18,7 +18,6 @@ def keep_highest(new: int, highest: deque) -> deque:
     return highest;
 
 
-
 with open('input.txt', 'r') as file:
     most_calories = deque()
     current_calories = 0
@@ -26,8 +25,6 @@ with open('input.txt', 'r') as file:
         if line == "\n":
             # reset for new elf
             most_calories = keep_highest(current_calories, most_calories)
-            # if current_calories > most_calories:
-            #     most_calories = current_calories
             current_calories = 0
         else:
             current_calories += int(line)
