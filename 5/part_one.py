@@ -10,6 +10,7 @@ for i in range(9):
     stacks.append(deque())
 
 move_regex = re.compile('move ([0-9]+) from ([0-9]+) to ([0-9]+)')
+
 def perform_move(line):
     m = move_regex.match(line)
     (num_to_move, from_col, to_col) = m.groups()
