@@ -1,4 +1,7 @@
 import operator
+import sys
+
+sys.setrecursionlimit(15000)
 
 # rules
 # only step to max 1 letter difference
@@ -11,8 +14,8 @@ import operator
 #
 # find shortest path
 
-with open('test_input.txt') as file:
-# with open('input.txt') as file:
+# with open('test_input.txt') as file:
+with open('input.txt') as file:
     grid = file.read().splitlines()
 
 startLocation = None
@@ -21,11 +24,11 @@ endLocation = None
 # find start and end
 for y, row in enumerate(grid):
     if not startLocation:
-        startColumn = row.find('S')
+        startColumn = row.find('E')
         if startColumn != -1:
              startLocation = (startColumn, y )
     if not endLocation:
-        endColumn = row.find('E')
+        endColumn = row.find('S')
         if endColumn != -1:
              endLocation = (endColumn, y)
 
@@ -33,20 +36,52 @@ print(f'Start: {startLocation} End: {endLocation}')
 
 
 DIRECTIONS = {
-    'U': (0, 1),
     'D': (0, -1),
     'L': (-1, 0),
-    'R': (1, 0)
+    'R': (1, 0),
+    'U': (0, 1)
 }
+
+def get_tiny_grid(x, y):
+    tiny_grid = []
+    for i in range (-2, 3):
+        line = []
+        tiny_grid.append(line)
+        for j in range(-2, 3):
+            line.append(get_grid_item(x+j, y+i))
+    return tiny_grid
 
 def get_grid_item(x, y):
     return grid[y][x]
 
-
+def get_height(c):
+    if c == 'E':
+        return ord('z')
+    if c == 'S':
+        return ord('a')
+    return ord(c)
+lowest = 200
+max_visited_count = 200
+# dead_nodes = set()
+absolute_visited = dict()
+search_count = 0
 possibleSteps = set()
 def recursiveSearch(current: tuple, visited: set):
-    if len(visited) % 100 == 0:
-        print(f'moving through ({current})')
+    global lowest
+    if get_height(get_grid_item(*current)) < lowest:
+        lowest = get_height(get_grid_item(*current))
+        print('lowest', get_grid_item(*current), current)
+    # if get_grid_item(*current) == 'p':
+    #     pass
+    global search_count
+    # if absolute_visited.get(current, 0) >= max_visited:
+    #     return
+    search_count += 1
+    # print(len(visited))
+    absolute_visited[current] = absolute_visited.get(current, 0) + 1
+
+    if search_count % 10000 == 0:
+        print(f'moving through ({current}), {search_count}')
         pass
     # print(f'visiting {current}')
     visited.add(current)
@@ -70,24 +105,33 @@ def recursiveSearch(current: tuple, visited: set):
             continue
         nextItem = get_grid_item(*coord)
         currentItem = get_grid_item(*current)
-        currenHeight = ord('a') if currentItem == 'S' else ord(currentItem)
-        nextHeight = ord('z') if nextItem == 'E' else ord(nextItem)
-        if abs(nextHeight - currenHeight) > 1:
+        currenHeight = get_height(currentItem)
+        nextHeight = get_height(nextItem)
+        # if nextHeight - currenHeight > 1:
+        if currenHeight - nextHeight > 1: # backwards because moving from end to start
+            if currenHeight - nextHeight < 0:
+                print('falling')
             # print(f'no climbing {nextHeight - currenHeight}')
             continue
         possibleLocs.append(coord)
 
-    for loc in possibleLocs:
-        recursiveSearch(loc, set(visited))
-
-    # differences = []
     # for loc in possibleLocs:
-    #     difference = abs(loc[0] - endLocation[0]) + abs(loc[1] - endLocation[1])
-    #     differences.append((difference, loc))
-    #     # ()
-    # for _, loc in sorted(differences):
     #     recursiveSearch(loc, set(visited))
 
-recursiveSearch(startLocation, set())
+    differences = []
+    for loc in possibleLocs:
+        if absolute_visited.get(loc, 0) < max_visited_count:
+            difference = abs(loc[0] - endLocation[0]) + abs(loc[1] - endLocation[1])
+            differences.append((difference, loc))
 
-print(f'Min steps {min(possibleSteps)}')
+    differences.sort()
+    for _, loc in differences:
+        # if loc not in dead_nodes:
+        recursiveSearch(loc, set(visited))
+    # dead_nodes.add(current)
+
+recursiveSearch(startLocation, set())
+if len(possibleSteps) > 0:
+    print(f'Min steps {min(possibleSteps)}')
+else:
+    print('Sad Trombone')
