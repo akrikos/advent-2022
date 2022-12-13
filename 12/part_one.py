@@ -148,7 +148,7 @@ def get_height(c):
 def is_valid_step(f, t, grid):
     return get_height(get_grid_item(t, grid)) - get_height(get_grid_item(f, grid)) <= 1
 
-
+# basically dijkstra's algorithm
 def stepsToGoal(grid, startLocation, endLocation):
     nodes_to_see = queue.PriorityQueue()
     nodes_to_see.put((0, startLocation))
