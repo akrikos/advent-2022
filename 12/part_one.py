@@ -149,19 +149,7 @@ def is_valid_step(f, t, grid):
     return get_height(get_grid_item(t, grid)) - get_height(get_grid_item(f, grid)) <= 1
 
 
-def stepsToGoal(grid):
-    startLocation = None
-    endLocation = None
-    for y, row in enumerate(grid):
-        if not startLocation:
-            startColumn = row.find('S')
-            if startColumn != -1:
-                startLocation = (startColumn, y )
-        if not endLocation:
-            endColumn = row.find('E')
-            if endColumn != -1:
-                endLocation = (endColumn, y)
-
+def stepsToGoal(grid, startLocation, endLocation):
     nodes_to_see = queue.PriorityQueue()
     nodes_to_see.put((0, startLocation))
     seen_nodes = set()
@@ -170,7 +158,7 @@ def stepsToGoal(grid):
         (steps, current_node) = nodes_to_see.get_nowait()
         print(steps, current_node)
         # seen_nodes.add(current_node)
-        if get_grid_item(current_node, grid) == 'E':
+        if current_node == endLocation:
             return steps
         for direction in DIRECTIONS.values():
             possible_walk = tuple(map(operator.add, current_node, direction))
@@ -178,5 +166,16 @@ def stepsToGoal(grid):
                 nodes_to_see.put((steps+1, possible_walk))
                 seen_nodes.add(possible_walk)
 
+startLocation = None
+endLocation = None
+for y, row in enumerate(grid):
+    if not startLocation:
+        startColumn = row.find('S')
+        if startColumn != -1:
+            startLocation = (startColumn, y )
+    if not endLocation:
+        endColumn = row.find('E')
+        if endColumn != -1:
+            endLocation = (endColumn, y)
 
-print(f'Steps: {stepsToGoal(grid)}')
+print(f'Steps: {stepsToGoal(grid, startLocation, endLocation)}')
