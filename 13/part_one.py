@@ -5,34 +5,50 @@ class Pair:
     def cmp_lists(left, right):
         # returns 0 if ==, < 0 if left is lower, > 0 if left is higher
 
-        # edge case, left is an empty list - but that would have returned 0 which is still true, so this doesn't matter
-        # except this found a bunch more, so maybe this did matter????? 3411-5450
-        if type(left) == list and len(left) == 0 and (type(right) == int or (type(right) == list and len(right) > 0)):
-            return -1
-        for i, left_item in enumerate(left):
-            # right list is too short
-            try:
-                right_item = right[i]
-            except:
-                return 1
+        if isinstance(left, int) and isinstance(right, int):
+            return left - right
 
-            cmp = None
-            if type(left_item) == int and type(right_item) == int:
-                cmp = left_item - right_item
-            elif type(left_item) == list and type(right_item) == list:
-                cmp = Pair.cmp_lists(left_item, right_item)
-            elif type(left_item) == list:
-                cmp = Pair.cmp_lists(left_item, [right_item])
-            elif type(right_item) == list:
-                cmp = Pair.cmp_lists([left_item], right_item)
+        if isinstance(left, list) and isinstance(right, list):
+            for (l, r) in zip(left, right):
+                val = Pair.cmp_lists(l, r)
+                if val != 0:
+                    return val
+            return len(left) - len(right)
+        elif isinstance(left, int):
+            return Pair.cmp_lists([left], right)
+        else:
+            return Pair.cmp_lists(left, [right])
 
-            if cmp is None:
-                print('yer broke')
 
-            if cmp != 0:
-                return cmp
 
-        return 0
+        # # edge case, left is an empty list - but that would have returned 0 which is still true, so this doesn't matter
+        # # except this found a bunch more, so maybe this did matter????? 3411-5450
+        # if type(left) == list and len(left) == 0 and (type(right) == int or (type(right) == list and len(right) > 0)):
+        #     return -1
+        # for i, left_item in enumerate(left):
+        #     # right list is too short
+        #     try:
+        #         right_item = right[i]
+        #     except:
+        #         return 1
+
+        #     cmp = None
+        #     if type(left_item) == int and type(right_item) == int:
+        #         cmp = left_item - right_item
+        #     elif type(left_item) == list and type(right_item) == list:
+        #         cmp = Pair.cmp_lists(left_item, right_item)
+        #     elif type(left_item) == list:
+        #         cmp = Pair.cmp_lists(left_item, [right_item])
+        #     elif type(right_item) == list:
+        #         cmp = Pair.cmp_lists([left_item], right_item)
+
+        #     if cmp is None:
+        #         print('yer broke')
+
+        #     if cmp != 0:
+        #         return cmp
+
+        # return 0
 
     # def cmp_lists(a, b):
     #     if isinstance(a, list) and isinstance(b, list):
