@@ -53,6 +53,7 @@ with open('input.txt') as file:
 
     # find least common multiple to keep things bounded
     lcm = 1
+    # lcm = functools.reduce(operator.mul, [m.test_num for m in monkies], 1)
     for monkey in monkies:
         lcm = lcm * monkey.test_num
 

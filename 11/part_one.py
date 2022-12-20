@@ -60,7 +60,7 @@ with open('input.txt') as file:
         for monkey in monkies:
             for worry_level_item in monkey.items:
                 new_level_item = monkey.inspect(worry_level_item)
-                bored_item_level = math.floor(new_level_item /3)
+                bored_item_level = math.floor(new_level_item /3) #  // is division that returns an int
                 if monkey.test(bored_item_level):
                     monkies[monkey.trueDestination].items.append(bored_item_level)
                 else:

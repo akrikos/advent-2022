@@ -31,17 +31,13 @@ with open('input.txt', 'r') as file:
                 if (abs(differences[0]) != 0):
                     if (differences[0] > 0):
                         tail_x_mod = 1
-                        # tail_pos[0] += 1
                     else:
                         tail_x_mod = -1
-                        # tail_pos[0] -= 1
                 if (abs(differences[1]) != 0):
                     if (differences[1] > 0):
                         tail_y_mod = 1
-                        # tail_pos[1] += 1
                     else:
                         tail_y_mod = -1
-                        # tail_pos[1] -= 1
             tail_pos = tuple(map(add, tail_pos, (tail_x_mod, tail_y_mod)))
             print(f'new head {head_pos}, new tail {tail_pos}')
             visited.add(tail_pos)
