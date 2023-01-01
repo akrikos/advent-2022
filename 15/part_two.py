@@ -44,15 +44,15 @@ class Ranges:
                     self.ranges[i] = (self.ranges[i][0], max_x)
                     break
 
-line_num = 10
-# line_num = 2000000
+min_search = 0
+# max_search = 20
+max_search = 4000000
 no_beacon_locs = set()
 known_beacon_locs = set()
 
-ranges_in_line = Ranges()
-
-with open('test_input.txt') as file:
-# with open('input.txt') as file:
+ranges_by_line = [Ranges() for i in range(min_search, max_search + 1)]
+# with open('test_input.txt') as file:
+with open('input.txt') as file:
     for line in file:
         inputs = parse_ints(line)
         sensor_loc = tuple(inputs[:2])
@@ -60,21 +60,19 @@ with open('test_input.txt') as file:
         known_beacon_locs.add(beacon_loc)
         distance = reduce(lambda accum, val: abs(val) + accum, map(operator.sub, sensor_loc, beacon_loc), 0)
 
-        # does this even matter to the line we care about?
-        if line_num >= (sensor_loc[1] - distance) and line_num <= (sensor_loc[1] + distance):
-            y_diff = abs(line_num - sensor_loc[1])
-            x_diff = distance - y_diff
-            min_x = -x_diff + sensor_loc[0]
-            max_x = x_diff + sensor_loc[0]
-            ranges_in_line.add_range(min_x, max_x)
+        for i in range(min_search, max_search + 1):
+            if i >= (sensor_loc[1] - distance) and i <= (sensor_loc[1] + distance):
+                y_diff = abs(i - sensor_loc[1])
+                x_diff = distance - y_diff
+                min_x = -x_diff + sensor_loc[0]
+                max_x = x_diff + sensor_loc[0]
+                # if i >= len(ranges_by_line) - 1:
+                #     ranges_by_line.append(Ranges())
+                ranges_by_line[i].add_range(min_x, max_x)
 
-num_locs_in_line = 0
-for r in ranges_in_line.ranges:
-    print(r)
-    num_locs_in_line = num_locs_in_line + r[1]-r[0]
-    # for beacon in known_beacon_locs:
-    #     if beacon[1] == line_num and beacon[0] >= r[0] and beacon[0] <= r[1]:
-    #         num_locs_in_line -= 1
-
-
-print(f'In row {line_num}, there are {num_locs_in_line} positions where a beacon cannot be.')
+for y, ranges  in enumerate(ranges_by_line):
+    if len(ranges.ranges) > 1:
+        # this is deeply flawed. could be more than two ranges since doesn't account for ranges abutting one another
+        # but it worked, so /shrug
+        print(ranges.ranges[0][1]+ 1, y)
+        break
