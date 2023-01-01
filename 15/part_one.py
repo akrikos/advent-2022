@@ -64,13 +64,13 @@ with open('input.txt') as file:
         if line_num >= (sensor_loc[1] - distance) and line_num <= (sensor_loc[1] + distance):
             y_diff = abs(line_num - sensor_loc[1])
             x_diff = distance - y_diff
-            min_x = -x_diff + sensor_loc[0]
+            min_x = -x_diff + sensor_loc[0] - 1
             max_x = x_diff + sensor_loc[0]
             ranges_in_line.add_range(min_x, max_x)
 
 num_locs_in_line = 0
 for r in ranges_in_line.ranges:
-    num_locs_in_line = num_locs_in_line + r[1]-r[0] + 1
+    num_locs_in_line = num_locs_in_line + r[1]-r[0]
     for beacon in known_beacon_locs:
         if beacon[1] == line_num and beacon[0] >= r[0] and beacon[0] <= r[1]:
             num_locs_in_line -= 1
